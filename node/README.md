@@ -2,9 +2,9 @@
 
 ### 爬取网站
 
-- [x] [掘金](https://juejin.cn/)
-- [x] [微信]()
-- [x] [知乎](https://www.zhihu.com/)
+- [ ] [掘金](https://juejin.cn/)
+- [ ] [微信]()
+- [ ] [知乎](https://www.zhihu.com/)
 
 ### 目录结构
 
