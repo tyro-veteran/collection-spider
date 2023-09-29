@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-export class TyroAxios {
+module.exports = class TyroAxios {
   constructor(options) {
     this.options = options;
     this._axiosInstance = axios.create(options);
@@ -29,15 +29,29 @@ export class TyroAxios {
       _axiosInstance,
       options: { interceptors },
     } = this;
-    if (!interceptors) {
-      return;
-    }
+
     const {
-      requestInterceptor,
-      requestInterceptorCatch,
-      responseInterceptor,
-      responseInterceptorCatch,
-    } = interceptors;
+      requestInterceptor = (config) => config,
+      requestInterceptorCatch = (error) => error,
+      responseInterceptor = (res) => res,
+      responseInterceptorCatch = (error) => error,
+    } = interceptors || {
+      requestInterceptor: null,
+      requestInterceptorCatch: null,
+      responseInterceptor: null,
+      responseInterceptorCatch: null,
+    };
+
+    // 注册全局响应拦截
+    _axiosInstance.interceptors.response.use(
+      (res) => {
+        return res;
+      },
+      (err) => {
+        console.error("Catched error in response:", err.message);
+        throw err;
+      }
+    );
 
     // 注册请求拦截
     _axiosInstance.interceptors.request.use(
@@ -49,6 +63,10 @@ export class TyroAxios {
       responseInterceptor,
       responseInterceptorCatch
     );
+  }
+
+  request(config, options) {
+    return this._axiosInstance.request(config, options);
   }
 
   get(config, options = {}) {
@@ -66,4 +84,4 @@ export class TyroAxios {
   delete(config, options = {}) {
     return this.request({ ...config, method: "DELETE" }, options);
   }
-}
+};
