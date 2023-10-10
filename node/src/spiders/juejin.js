@@ -1,10 +1,11 @@
 const JuejinService = require("../services/juejin.service");
+
 const to = require("await-to-js").default;
 
 module.exports = class JuejinSpider {
   constructor() {
-    this.cookie = null;
     this.collectionSet = [];
+    this.collectionDetailMap = new Map();
   }
 
   static async getCollectionSet() {
@@ -32,6 +33,7 @@ module.exports = class JuejinSpider {
       if (res.has_more) {
         cursor += 1;
       } else {
+        console.log("---获取收藏夹成功---");
         break;
       }
     }
@@ -39,9 +41,49 @@ module.exports = class JuejinSpider {
     return collectionSet;
   }
 
+  static async getCollectionDetail(collection_id, collection_name) {
+    console.log(`---开始获取 {${collection_name}} 收藏夹详情---`);
+    const collectionDetail = [];
+    let cursor = 0;
+
+    while (true) {
+      const [err, res] = await to(
+        JuejinService.getCollectionDetail(collection_id, String(cursor), 20)
+      );
+
+      if (err) {
+        console.log(err, `---获取 {${collection_name}} 收藏夹详情失败---`);
+        break;
+      }
+
+      collectionDetail.push(...res.data.data.articles);
+
+      if (res.has_more) {
+        cursor += 1;
+      } else {
+        console.log(`---获取 {${collection_name}} 收藏夹详情成功---`);
+        break;
+      }
+    }
+
+    return collectionDetail;
+  }
+
   async fetchPage(url) {}
 
-  static async crawl() {
-    this.collectionSet = await this.getCollectionSet();
+  async crawl() {
+    this.collectionSet = await JuejinSpider.getCollectionSet();
+
+    for (const collection of this.collectionSet) {
+      this.collectionDetailMap.set(
+        collection.collection_name,
+        await JuejinSpider.getCollectionDetail(
+          collection.collection_id,
+          collection.collection_name
+        )
+      );
+    }
+
+    console.log(this.collectionDetailMap, "收藏夹详情");
   }
 };
