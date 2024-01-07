@@ -1,4 +1,4 @@
-const TyroAxios = require("../httpRequest");
+const TyroAxios = require(".");
 
 const httpRequest = new TyroAxios({
   baseURL: "https://api.juejin.cn/interact_api/v2",
