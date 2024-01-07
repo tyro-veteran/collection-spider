@@ -1,4 +1,5 @@
 const JuejinService = require("../services/juejin.service");
+const { juejinParser } = require("../parsers");
 
 const to = require("await-to-js").default;
 
@@ -84,6 +85,14 @@ module.exports = class JuejinSpider {
       );
     }
 
+    console.log(this.collectionSet, "收藏夹");
     console.log(this.collectionDetailMap, "收藏夹详情");
+
+    await this.triggerParser();
+  }
+
+  async triggerParser() {
+    // 假设 this.parser 是爬虫对应的解析器实例
+    await juejinParser.parse(this.collectionSet); // 调用解析器的解析方法
   }
 };
