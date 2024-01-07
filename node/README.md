@@ -30,8 +30,9 @@
     │   ├── wechat.js
     │   └── zhihu.js
     ├── services                // 请求逻辑
-    │   ├── postService.js
-    │   └── userService.js
+    │   ├── juejin.service.js
+    │   ├── wechat.service.js
+    │   └── zhihu.service.js
     ├── spiders                 // 爬取网页数据
     │   ├── juejin.js
     │   ├── wechat.js

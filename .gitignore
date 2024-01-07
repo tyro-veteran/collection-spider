@@ -1,3 +1,7 @@
+# rest client
+*.http
+*.rest
+
 # Logs
 logs
 *.log
